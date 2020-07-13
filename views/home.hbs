@@ -1,3 +1,45 @@
 <div class="container">
     <h2 class="text-center">Markdown Previewer / Converter</h2>
+    <form action="/blog" method="POST">
+    <div class="edit-container container-fluid mt-5" style="display: flex;">
+        <div id="editor">
+            <textarea name="blogBody" id="blogBody" cols="60" rows="10"></textarea>            
+        </div>
+
+        <div class="container-fluid">
+            <h3>Preview</h3>
+            <div id="html-equiv">
+
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Publish</button>
+    </form>
 </div>
+
+<script>
+    var textareas = document.getElementsByTagName('textarea');
+    var count = textareas.length;
+    for(var i=0;i<count;i++){
+        textareas[i].onkeydown = function(e){
+            if(e.keyCode==9 || e.which==9){
+                e.preventDefault();
+                var s = this.selectionStart;
+                this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
+                this.selectionEnd = s+1; 
+            }
+        }
+    }
+
+    var blogBody = document.querySelector('#blogBody');
+    var preview = document.querySelector('#html-equiv');
+    blogBody.addEventListener('input', () => {
+        var converter = new showdown.Converter();
+        var md = blogBody.value;
+        var html = converter.makeHtml(md);
+        // now add it to the html-equiv
+        preview.innerHTML = html;
+    })
+</script>
+
